@@ -28,19 +28,19 @@ const PermissionPage = () => {
     const dispatch = useAppDispatch();
 
     const handleDeletePermission = async (id: string | undefined) => {
-        if (id) {
-            const res = await callDeletePermission(id);
-            if (res && res.statusCode === 200) {
-                message.success('Xóa Permission thành công');
-                reloadTable();
-            } else {
-                notification.error({
-                    message: 'Có lỗi xảy ra',
-                    description: res.error
-                });
-            }
+    if (id) {
+        const res = await callDeletePermission(id);
+        if (res && res.status === 200) {
+            message.success('Xóa Permission thành công');
+            reloadTable();
+        } else {
+            notification.error({
+                message: 'Có lỗi xảy ra',
+                description: res.error || res.message || 'Không thể xóa Permission'
+            });
         }
     }
+};
 
     const reloadTable = () => {
         tableRef?.current?.reload();

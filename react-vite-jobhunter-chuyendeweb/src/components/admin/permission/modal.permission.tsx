@@ -27,45 +27,98 @@ const ModalPermission = (props: IProps) => {
     }, [dataInit])
 
 
+    // const submitPermission = async (valuesForm: any) => {
+    //     const { name, apiPath, method, module } = valuesForm;
+    //     if (dataInit?.id) {
+    //         //update
+    //         const permission = {
+    //             name,
+    //             apiPath, method, module
+    //         }
+
+    //         const res = await callUpdatePermission(permission, dataInit.id);
+    //         if (res.data) {
+    //             message.success("Cập nhật permission thành công");
+    //             handleReset();
+    //             reloadTable();
+    //         } else {
+    //             notification.error({
+    //                 message: 'Có lỗi xảy ra',
+    //                 description: res.error
+    //             });
+    //         }
+    //     } else {
+    //         //create
+    //         const permission = {
+    //             name,
+    //             apiPath, method, module
+    //         }
+    //         const res = await callCreatePermission(permission);
+    //         if (res.data) {
+    //             message.success("Thêm mới permission thành công");
+    //             handleReset();
+    //             reloadTable();
+    //         } else {
+    //             notification.error({
+    //                 message: 'Có lỗi xảy ra',
+    //                 description: res.message
+    //             });
+    //         }
+    //     }
+    // }
+
+
+
     const submitPermission = async (valuesForm: any) => {
         const { name, apiPath, method, module } = valuesForm;
+        const permission = { name, apiPath, method, module };
+
         if (dataInit?.id) {
             //update
-            const permission = {
-                name,
-                apiPath, method, module
-            }
-
-            const res = await callUpdatePermission(permission, dataInit.id);
-            if (res.data) {
-                message.success("Cập nhật permission thành công");
-                handleReset();
-                reloadTable();
-            } else {
+            try {
+                const res = await callUpdatePermission(permission, Number(dataInit.id));
+                if (res && res.status === 200) {
+                    message.success("Cập nhật permission thành công");
+                    handleReset();
+                    reloadTable();
+                } else {
+                    const errorMessage = (res.data as { message?: string })?.message || res.message || 'Không thể cập nhật permission';
+                    notification.error({
+                        message: 'Có lỗi xảy ra',
+                        description: errorMessage
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating permission:', error);
                 notification.error({
                     message: 'Có lỗi xảy ra',
-                    description: res.error
+                    description: 'Vui lòng thử lại sau'
                 });
             }
         } else {
             //create
-            const permission = {
-                name,
-                apiPath, method, module
-            }
-            const res = await callCreatePermission(permission);
-            if (res.data) {
-                message.success("Thêm mới permission thành công");
-                handleReset();
-                reloadTable();
-            } else {
+            try {
+                const res = await callCreatePermission(permission);
+                if (res && res.status === 200) {
+                    message.success("Thêm mới permission thành công");
+                    handleReset();
+                    reloadTable();
+                } else {
+                    const errorMessage = (res.data as { message?: string })?.message || res.message || 'Không thể tạo permission';
+                    notification.error({
+                        message: 'Có lỗi xảy ra',
+                        description: errorMessage
+                    });
+                }
+            } catch (error) {
+                console.error('Error creating permission:', error);
                 notification.error({
                     message: 'Có lỗi xảy ra',
-                    description: res.message
+                    description: 'Vui lòng thử lại sau'
                 });
             }
         }
-    }
+    };
 
     const handleReset = async () => {
         form.resetFields();

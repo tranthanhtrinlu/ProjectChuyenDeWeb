@@ -122,8 +122,8 @@ const LayoutAdmin = () => {
 
     const handleLogout = async () => {
         const res = await callLogout();
-        if (res && +res.statusCode === 200) {
-            dispatch(setLogoutAction({}));
+        if (res && +res.status === 200) {
+            dispatch(setLogoutAction());
             message.success('Đăng xuất thành công');
             navigate('/')
         }
